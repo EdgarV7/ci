@@ -16,14 +16,14 @@ class datosAdapter(var datos : ArrayList<ArrayList<String>>, var listener : View
     class DatosViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         var texto1 : TextView
         var texto2 : TextView
-        var boton : Button
+        //var boton : Button
 
         //bloque de inizacion
         //blque de código que se corre TODAS las veces que se crea un objeto
         init{
             texto1 = itemView.findViewById(R.id.rowText1)
             texto2 = itemView.findViewById(R.id.rowText2)
-            boton = itemView.findViewById(R.id.rowButton)
+            //boton = itemView.findViewById(R.id.rowButton)
         }
     }
 
@@ -34,11 +34,11 @@ class datosAdapter(var datos : ArrayList<ArrayList<String>>, var listener : View
         view.setOnClickListener(listener)
 
         val viewHolder = DatosViewHolder(view)
-
+        /*
         viewHolder.boton.setOnClickListener{
             Log.wtf("BOTON","HOLA")
         }
-
+        */
         return viewHolder
     }
 

@@ -1,5 +1,6 @@
 package com.example.fragmentostarea
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,9 +23,7 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
     private val TAG = "request"
     private lateinit var queue : RequestQueue
     lateinit var recyclerView: RecyclerView
-    lateinit var datosPrueba : ArrayList<ArrayList<String>>
-    lateinit var datosPrueba1 : ArrayList<String>
-    lateinit var datosPrueba2 : ArrayList<String>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,91 +32,41 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
         //el recylcer es un widger que sirve para desplegar
         //muchos elementos con interfaz identica pero con tipos distintos
 
-        //DATOS (abstracto) - Adapter(el traductor) - GUI (concreto)
-
-        datos = ArrayList()
-        //datos.add("Fido")
-        //datos.add("Fifi")
-        //datos.add("Firulais")
-        //datos.add("Solovino")
-
-        datosPrueba = ArrayList()
-        datosPrueba1 = ArrayList()
-        datosPrueba2 = ArrayList()
-        datosPrueba1.add(0,"hola")
-        datosPrueba1.add(1,"puto")
-        datosPrueba2.add(0,"pito")
-        datosPrueba2.add(1,"pito-doble")
-        datosPrueba.add(0,datosPrueba1)
-        datosPrueba.add(1,datosPrueba2)
-
-
-
-
-        //JSON
-        //Javascript object notation
-        //- su uso es modelar información
-
-
-        //los documentos pueden estar definidos por 2 tipos de contenedro
-        //objetos - {}
-        //arreglos - []
-
-        //val jsonTest = "{'nombre': 'Juan', 'edad': 20}"
-        //val jsonTest2 = "{'nombre': 'Pedro', 'calificaciones': [80,70,50,90]}"
-        //val jsonTest3 = "{'nombre': 'Juan', 'edad': 20},{'nombre': 'Pedro', 'edad': 29},{'nombre': 'Ana', 'edad': 21}"
-
-        //parsin - interpretación de texto con resultado en objeto de kotlin
-        //parser - libreria / logica / codigo que se encarga de esta traduccion
-        /*try {
-            val objeto = JSONObject(jsonTest)
-            Log.wtf("JSON",objeto.getString("nombre"))
-            Log.wtf("JSON",objeto.getString("edad").toString())
-
-            val objeto2 = JSONObject(jsonTest2)
-            val calificaciones = objeto2.getJSONArray("calificaciones")
-
-            Log.wtf("JSON",objeto2.getString("nombre"))
-            for(i in 0 until calificaciones.length()){
-                Log.wtf("json",calificaciones.getInt(i).toString())
-            }
-
-            val objeto3 = JSONArray(jsonTest3)
-            for(i in 0 until objeto3.length()){
-                val actual = objeto3.getJSONObject(i)
-                Log.wtf("JSON",actual.getString("nombre"))
-                Log.wtf("JSON",actual.getInt("edad").toString())
-            }
-        }catch (e: JSONException){
-            e.printStackTrace()
-        }*/
-
-        //HACIENDO REQUESTS CON VOLLEY
-        //Looper
-        //los requests son asíncronos
-        //que diablos significa asíncrono?!
-
         //hagamos el queue
         queue = Volley.newRequestQueue(this)
-        /*var url = "https://www.google.com"
+    }
 
-        var stringRequest = StringRequest(
-            Request.Method.GET,
-            url,
-            { response ->
-                Toast.makeText(this,"response: $response", Toast.LENGTH_SHORT).show()
-            },
-            { error ->
-                Toast.makeText(this,"error: $error", Toast.LENGTH_SHORT).show()
-            }
-        ).apply {
-            tag = TAG
-        }*/
-        //var temp : ArrayList<ArrayList<String>>
-        //temp = ArrayList()
+    override fun onStop() {
+        super.onStop()
 
+        //si hacemos stop lo ideal es detener la queue
+        queue.cancelAll(TAG)
+    }
+
+    //NOTA DE ESTE MÉTODO:
+    // el argumento que recibimos es el widget que mando llamar o este método
+    override fun onClick(row: View) {
+        //tenemos un sólo escucha para todos los rows!
+        //podemos obtener la ubicación de una row referencia a la vista
+        val position = recyclerView.getChildLayoutPosition(row)
+        Toast.makeText(this, datos[position][0], Toast.LENGTH_SHORT).show()
+
+        val intent = Intent(this, ProductoActivity::class.java)
+
+        intent.putExtra("nombre", datos[position][0])
+        intent.putExtra("precio",  datos[position][1])
+        intent.putExtra("cantidad", datos[position][2])
+        intent.putExtra("descripcion",  datos[position][3])
+        intent.putExtra("color",  datos[position][4])
+
+        startActivity(intent)
+    }
+
+    fun cargarDatos(view: View?) {
+        Toast.makeText(this, "CARGANDO DATOS, ESPERO UN MOMENTO", Toast.LENGTH_SHORT).show()
+        datos = ArrayList()
         var url = "https://raw.githubusercontent.com/TheAlphaWolf450/JSON-PRUEBA-A/main/productos.json"
-        //val objeto = JSONArray(url)
+        
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET,
             url,
@@ -126,36 +75,9 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
                 //procesar lógica del json array
                 for(i in 0 until response.length()) {
                     val actual = response.getJSONObject(i)
-                    //temp.add(0,actual.getString("nombre"))
-                    //temp.add(1,actual.getString("precio"))
-
-                    //Log.wtf("JSON-REQUEST",temp[0])
-                    //Log.wtf("JSON-REQUEST",temp[1])
-                    datos.add(i, arrayListOf(actual.getString("nombre"),actual.getString("precio")))
-                    /*
-                    datos.add(1, arrayListOf("Furro", "No"))
-                    datos.add(2, arrayListOf("Maldita", "Sea"))
-                    */
-                    //datos.add(i, temp)
-                    //datos[i][0] = actual.getString("nombre")
-                    //datos[i][1] = actual.getString("precio")
-                    Log.wtf("AQUIII",datos[i][0])
-                    Log.wtf("AQUIII",datos[i][1])
-
-                    Log.wtf("ie",i.toString())
-
-                    /*val plataformas = actual.getJSONArray("plataformas")
-                    for(j in 0 until plataformas.length()){
-                        Log.wtf("JSON-REQUEST",plataformas.getString(j))
-                    }*/
-
+                    datos.add(i, arrayListOf(actual.getString("nombre"),actual.getString("precio"),actual.getString("cantidad"),actual.getString("descripcion"),actual.getString("color")))
                 }
-                Log.wtf("EIO", datos[0][0])
-                Log.wtf("EIO", datos[0][1])
-                Log.wtf("EIO", datos[1][0])
-                Log.wtf("EIO", datos[1][1])
-                Log.wtf("EIO", datos[2][0])
-                Log.wtf("EIO", datos[2][1])
+
                 //ADAPTER
                 val adapter = datosAdapter(datos, this)
                 //GUI
@@ -179,41 +101,7 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
         ).apply {
             tag = TAG
         }
-        /*
-        //ADAPTER
-        //val adapter = datosAdapter(datosPrueba, this)
-        //GUI
-        recyclerView = findViewById(R.id.recyclerView)
 
-        //es necesario utilizar un layout manager
-        //layout manager es una clase que define como se van a desplegar
-        //los items en el recyclerview
-
-        val llm = LinearLayoutManager(this)
-        llm.orientation = LinearLayoutManager.VERTICAL
-        val glm = GridLayoutManager(this,3)
-
-        //terminamos asignando al recycler view referencias a objetos necesarios
-        recyclerView.layoutManager = llm
-        recyclerView.adapter = adapter
-        */
         queue.add(jsonArrayRequest)
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        //si hacemos stop lo ideal es detener la queue
-        queue.cancelAll(TAG)
-    }
-
-    //NOTA DE ESTE MÉTODO:
-    // el argumento que recibimos es el widget que mando llamar o este método
-    override fun onClick(row: View) {
-        //tenemos un sólo escucha para todos los rows!
-        //podemos obtener la ubicación de una row referencia a la vista
-        val position = recyclerView.getChildLayoutPosition(row)
-        Toast.makeText(this, datos[position][0], Toast.LENGTH_SHORT).show()
     }
 }
