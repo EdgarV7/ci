@@ -113,26 +113,32 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
         ).apply {
             tag = TAG
         }*/
+        //var temp : ArrayList<ArrayList<String>>
+        //temp = ArrayList()
 
         var url = "https://raw.githubusercontent.com/TheAlphaWolf450/JSON-PRUEBA-A/main/productos.json"
-        val objeto = JSONArray(url)
+        //val objeto = JSONArray(url)
         val jsonArrayRequest = JsonArrayRequest(
             Request.Method.GET,
             url,
             null,
             {response ->
                 //procesar lógica del json array
-                var temp : ArrayList<String>
-                temp = ArrayList()
-                for(i in 0 until response.length()){
+                for(i in 0 until response.length()) {
                     val actual = response.getJSONObject(i)
-                    temp.add(0,actual.getString("nombre"))
-                    temp.add(1,actual.getString("precio"))
+                    //temp.add(0,actual.getString("nombre"))
+                    //temp.add(1,actual.getString("precio"))
 
-                    Log.wtf("JSON-REQUEST",temp[0])
-                    Log.wtf("JSON-REQUEST",temp[1])
-
-                    datos.add(i,temp)
+                    //Log.wtf("JSON-REQUEST",temp[0])
+                    //Log.wtf("JSON-REQUEST",temp[1])
+                    datos.add(i, arrayListOf(actual.getString("nombre"),actual.getString("precio")))
+                    /*
+                    datos.add(1, arrayListOf("Furro", "No"))
+                    datos.add(2, arrayListOf("Maldita", "Sea"))
+                    */
+                    //datos.add(i, temp)
+                    //datos[i][0] = actual.getString("nombre")
+                    //datos[i][1] = actual.getString("precio")
                     Log.wtf("AQUIII",datos[i][0])
                     Log.wtf("AQUIII",datos[i][1])
 
@@ -142,7 +148,30 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
                     for(j in 0 until plataformas.length()){
                         Log.wtf("JSON-REQUEST",plataformas.getString(j))
                     }*/
+
                 }
+                Log.wtf("EIO", datos[0][0])
+                Log.wtf("EIO", datos[0][1])
+                Log.wtf("EIO", datos[1][0])
+                Log.wtf("EIO", datos[1][1])
+                Log.wtf("EIO", datos[2][0])
+                Log.wtf("EIO", datos[2][1])
+                //ADAPTER
+                val adapter = datosAdapter(datos, this)
+                //GUI
+                recyclerView = findViewById(R.id.recyclerView)
+
+                //es necesario utilizar un layout manager
+                //layout manager es una clase que define como se van a desplegar
+                //los items en el recyclerview
+
+                val llm = LinearLayoutManager(this)
+                llm.orientation = LinearLayoutManager.VERTICAL
+                val glm = GridLayoutManager(this,3)
+
+                //terminamos asignando al recycler view referencias a objetos necesarios
+                recyclerView.layoutManager = llm
+                recyclerView.adapter = adapter
             },
             {error ->
                 Toast.makeText(this,"error: $error", Toast.LENGTH_SHORT).show()
@@ -150,12 +179,9 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
         ).apply {
             tag = TAG
         }
-
-        val adapter = datosAdapter(datosPrueba, this)
-
+        /*
         //ADAPTER
-
-
+        //val adapter = datosAdapter(datosPrueba, this)
         //GUI
         recyclerView = findViewById(R.id.recyclerView)
 
@@ -170,7 +196,7 @@ class RecyclerActivity : AppCompatActivity(), View.OnClickListener {
         //terminamos asignando al recycler view referencias a objetos necesarios
         recyclerView.layoutManager = llm
         recyclerView.adapter = adapter
-
+        */
         queue.add(jsonArrayRequest)
 
     }
