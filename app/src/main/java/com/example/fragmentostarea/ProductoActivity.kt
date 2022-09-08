@@ -32,25 +32,4 @@ class ProductoActivity : AppCompatActivity() {
         descripcionView.text = intent.getStringExtra("descripcion")
         colorView.text = intent.getStringExtra("color")
     }
-
-    fun regresar(view: View?){
-
-        // vamos a usar un intent para almacenar datos
-        // OJO - aquí usamos el constructor vacío
-        val intent = Intent()
-
-        // ponemos valores en intent
-        /*
-        intent.putExtra("resultadoNombre", entrada.text.toString())
-        intent.putExtra("resultadoCalificacion", 80)
-
-        // muy importante si estamos escuchando el resultado
-        setResult(Activity.RESULT_OK, intent)
-        */
-
-        // con esto se termina ejecución de esta actividad
-        finish()
-
-        // IMPORTANTE: NO hay que crear la actividad anterior de vuelta
-    }
 }
