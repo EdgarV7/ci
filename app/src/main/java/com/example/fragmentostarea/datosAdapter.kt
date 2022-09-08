@@ -43,7 +43,6 @@ class datosAdapter(var datos : ArrayList<ArrayList<String>>, var listener : View
     }
 
     override fun onBindViewHolder(holder: DatosViewHolder, position: Int) {
-        Log.wtf("JSON-HOLD","hola puto")
         holder.texto1.text = datos[position][0]
         holder.texto2.text = datos[position][1]
 
